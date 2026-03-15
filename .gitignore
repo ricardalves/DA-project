@@ -1,0 +1,34 @@
+# --- IDEs & Editor Specific ---
+.idea/
+.vscode/
+*.swp
+*.save
+.DS_Store
+Thumbs.db
+
+# --- C++ Build Artifacts ---
+# Ignora a pasta onde o CLion compila o código
+cmake-build-debug/
+cmake-build-release/
+build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# --- Executables ---
+# Ignora os ficheiros finais gerados (ajusta o nome se o teu executável for diferente)
+*.exe
+*.out
+*.app
+DA_Project_Executable
+
+# --- Doxygen (CRÍTICO) ---
+# Não queremos enviar as centenas de ficheiros HTML gerados
+html/
+latex/
+doxygen_objdb_*.tmp
+
+# --- Project Specific ---
+# Se tiveres ficheiros de logs ou temporários de testes
+*.log
