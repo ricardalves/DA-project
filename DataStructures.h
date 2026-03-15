@@ -1,8 +1,10 @@
+#ifndef DATASTRUCTURES_H
+#define DATASTRUCTURES_H
+#include <string>
 /**
 * @file DataStructures.h
  * @brief Useful Data Structures.
  */
-#import <string>
 
 /**
  * @brief Represents a scientific article submission.
@@ -37,3 +39,4 @@ struct Config {
     int riskAnalysis;
     std::string outputFileName = "output.txt";
 };
+#endif //DATASTRUCTURES_H
