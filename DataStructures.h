@@ -1,10 +1,10 @@
-#ifndef DATASTRUCTURES_H
-#define DATASTRUCTURES_H
-#include <string>
 /**
 * @file DataStructures.h
  * @brief Useful Data Structures.
  */
+#ifndef DATASTRUCTURES_H
+#define DATASTRUCTURES_H
+#include <string>
 
 /**
  * @brief Represents a scientific article submission.
