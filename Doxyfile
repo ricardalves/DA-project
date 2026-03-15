@@ -1,0 +1,18 @@
+# Project description
+PROJECT_NAME           = "DA project 1"
+PROJECT_NUMBER         = "1.0"
+OUTPUT_DIRECTORY       = doc
+
+# Format of the input
+INPUT                  = . README.md
+RECURSIVE              = YES
+FILE_PATTERNS          = *.cpp *.h
+
+# Extraction
+EXTRACT_ALL            = YES
+OPTIMIZE_OUTPUT_FOR_C  = NO
+
+# Format of the output
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+HTML_OUTPUT            = html
