@@ -8,18 +8,18 @@
 
 /**
  * @brief Represents a scientific article submission.
- * @note Space Complexity: O(N) where N is the length of the title string.
+ * @note Complexity: O(N) where N is the length of the title string.
  */
 struct Submission {
     int id;
     std::string title;
     int primary;
-    int secondary; // 0 if it doesn't exist
+    int secondary;
 };
 
 /**
  * @brief Represents a reviewer and their domain expertise(s).
- * @note Space Complexity: O(N) where N is the length of the name string.
+ * @note Complexity: O(N) where N is the length of the name string.
  */
 struct Reviewer {
     int id;
@@ -29,12 +29,24 @@ struct Reviewer {
 };
 
 /**
- * @brief Global configuration parameters for the assignment algorithm.
- * @note Defines the capacity constraints for the Network Flow graph.
+ * @brief Global configuration parameters for the algorithm.
+ * @note Defines the capacity constraints for the graph.
  */
-struct Config {
-    int minReviews;
-    int maxLoad;
+struct Parameters {
+    int minReviewsSub;
+    int minReviewsRev;
+    int primaryExpertise;
+    int secondaryExpertise;
+    int primaryDomain;
+    int secondaryDomain;
+};
+
+/**
+ * @brief Configuration parameters to control the algorithm's execution and output.
+ * @note Complexity: O(N) where N is the length of the outputFileName string.
+ */
+struct Control
+{
     int genAssignments;
     int riskAnalysis;
     std::string outputFileName = "output.txt";
