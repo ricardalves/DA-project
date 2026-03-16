@@ -29,8 +29,8 @@ struct Reviewer {
 };
 
 /**
- * @brief Global configuration parameters for the assignment algorithm.
- * @note Defines the capacity constraints for the Network Flow graph.
+ * @brief Global configuration parameters for the algorithm.
+ * @note Defines the capacity constraints for the graph.
  */
 struct Parameters {
     int minReviewsSub;
@@ -41,6 +41,10 @@ struct Parameters {
     int secondaryDomain;
 };
 
+/**
+ * @brief Configuration parameters to control the algorithm's execution and output.
+ * @note Complexity: O(N) where N is the length of the outputFileName string.
+ */
 struct Control
 {
     int genAssignments;
