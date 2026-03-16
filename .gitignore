@@ -32,3 +32,4 @@ doxygen_objdb_*.tmp
 # --- Project Specific ---
 # Se tiveres ficheiros de logs ou temporários de testes
 *.log
+Project1SampleDatasets/
