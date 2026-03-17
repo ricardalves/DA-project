@@ -8,22 +8,23 @@
 
 /**
  * @brief Represents a scientific article submission.
- * @note Complexity: O(N) where N is the length of the title string.
  */
 struct Submission {
     int id;
     std::string title;
+    std::string authors;
+    std::string email;
     int primary;
     int secondary;
 };
 
 /**
  * @brief Represents a reviewer and their domain expertise(s).
- * @note Complexity: O(N) where N is the length of the name string.
  */
 struct Reviewer {
     int id;
     std::string name;
+    std::string email;
     int primary;
     int secondary;
 };
@@ -43,7 +44,6 @@ struct Parameters {
 
 /**
  * @brief Configuration parameters to control the algorithm's execution and output.
- * @note Complexity: O(N) where N is the length of the outputFileName string.
  */
 struct Control
 {
