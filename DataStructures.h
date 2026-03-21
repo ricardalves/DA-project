@@ -35,7 +35,7 @@ struct Reviewer {
  */
 struct Parameters {
     int minReviewsSub;
-    int minReviewsRev;
+    int maxReviewsRev;
     int primaryExpertise;
     int secondaryExpertise;
     int primaryDomain;

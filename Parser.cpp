@@ -111,7 +111,7 @@ bool parseDataset(const std::string& filename, std::vector<Submission>& subs, st
             if (section == PARAMETERS)
             {
                 if (key == "MinReviewsPerSubmission") params.minReviewsSub = std::stoi(value);
-                else if (key == "MaxReviewsPerReviewer") params.minReviewsRev = std::stoi(value);
+                else if (key == "MaxReviewsPerReviewer") params.maxReviewsRev = std::stoi(value);
                 else if (key == "PrimaryReviewerExpertise") params.primaryExpertise = std::stoi(value);
                 else if (key == "SecondaryReviewerExpertise") params.secondaryExpertise = std::stoi(value);
                 else if (key == "PrimarySubmissionDomain") params.primaryDomain = std::stoi(value);
