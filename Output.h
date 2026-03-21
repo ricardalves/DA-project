@@ -5,9 +5,17 @@
 #ifndef PROJETO1_OUTPUT_H
 #define PROJETO1_OUTPUT_H
 
+#include "DataStructures.h"
+#include <vector>
+using namespace std;
 
-class Output {
-};
+bool output(const string& filename,
+                  vector<Submission>& subs,
+                  vector<Reviewer>& revs,
+                  Parameters& params,
+                  Control& ctrl) {
+
+}
 
 
 #endif //PROJETO1_OUTPUT_H
