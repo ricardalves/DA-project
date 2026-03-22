@@ -3,11 +3,11 @@
 #include <vector>
 #include <string>
 #include "Parser.h"
-#include "GenerateAssignments.h"
+#include "AssignmentTool.h"
 
 using namespace std;
 template <typename T>
-Graph<T>* create_graph(const string& filename, vector<Submission>& subs, vector<Reviewer>& revs, Parameters& params, Control& ctrl) {
+Graph<T>* createGraph(const string& filename, vector<Submission>& subs, vector<Reviewer>& revs, Parameters& params, Control& ctrl) {
     Graph<T>* graph= new Graph<T>;
     vector<Vertex<Submission>*> subs_ver;
     vector<Vertex<Reviewer>*> revs_ver;
@@ -26,6 +26,7 @@ Graph<T>* create_graph(const string& filename, vector<Submission>& subs, vector<
         revs_ver.push_back(v);
         graph->addEdge(v,graph->findVertex("Target"),params.maxReviewsRev);
     }
-    link_subs_to_revs(subs_ver,revs_ver,ctrl);
+    runGenerateAssignments(subs_ver,revs_ver,ctrl);
+    runMaxFlowEdmondsKarp(graph,graph->findVertex("Source")->getInfo(),graph->findVertex("Target")->getInfo());
     return graph;
 }
