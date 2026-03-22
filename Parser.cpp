@@ -6,6 +6,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include "AssignmentTool.h"
 
 // Helper function to remove spaces, \n, and quotes from a string
 void trim(std::string &s) {

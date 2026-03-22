@@ -4,13 +4,43 @@
 
 #include "AssignmentTool.h"
 #include <queue>
+#include <iostream>
+#include <string>
+using namespace std;
 
-void runGenerateAssignments(vector<Vertex<Submission>*> subs, vector<Vertex<Reviewer>*> revs, Control ctrl) {
+
+Graph<string>* createGraph(const string& filename) {
+    vector<Submission> subs;
+    vector<Reviewer> revs;
+    Parameters params;
+    Control ctrl;
+    parseDataset(filename,subs,revs,params,ctrl);
+    Graph<string>* graph= new Graph<string>;
+    vector<Submission> subs_ver;
+    vector<Reviewer> revs_ver;
+    graph->addVertex("Source");
+    graph->addVertex("Target");
+    for (auto s: subs) {
+        graph->addVertex(s.title);
+        subs_ver.push_back(s);
+        graph->addEdge("Source",s.title,params.minReviewsSub);
+    }
+    for (auto r: revs) {
+        graph->addVertex(r.name);
+        revs_ver.push_back(r);
+        graph->addEdge(r.name,"Target",params.maxReviewsRev);
+    }
+    runGenerateAssignments(graph,subs_ver,revs_ver,ctrl);
+    //runMaxFlowEdmondsKarp(graph,"Source","Target");
+    return graph;
+}
+
+void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Reviewer> revs, Control ctrl) {
     if (ctrl.genAssignments==0){
         for (auto sub: subs) {
             for (auto rev: revs) {
-                if ((sub->getInfo().primary==rev->getInfo().primary)||(sub->getInfo().primary==rev->getInfo().secondary)||(sub->getInfo().secondary==rev->getInfo().primary)||(sub->getInfo().secondary==rev->getInfo().secondary)) {
-                    sub->addEdge(rev,1);
+                if ((sub.primary==rev.primary)||(sub.primary==rev.secondary)||(sub.secondary==rev.primary)||(sub.secondary==rev.secondary)) {
+                    g->findVertex(sub.title)->addEdge(g->findVertex(rev.name),1);
                 }
             }
         }
@@ -18,8 +48,8 @@ void runGenerateAssignments(vector<Vertex<Submission>*> subs, vector<Vertex<Revi
     if (ctrl.genAssignments==1) {
         for (auto sub: subs) {
             for (auto rev: revs) {
-                if (sub->getInfo().primary==rev->getInfo().primary) {
-                    sub->addEdge(rev,1);
+                if (sub.primary==rev.primary) {
+                    g->findVertex(sub.title)->addEdge(g->findVertex(rev.name),1);
                 }
             }
         }
@@ -27,8 +57,8 @@ void runGenerateAssignments(vector<Vertex<Submission>*> subs, vector<Vertex<Revi
     if (ctrl.genAssignments==2) {
         for (auto sub: subs) {
             for (auto rev: revs) {
-                if (sub->getInfo().primary==rev->getInfo().primary||sub->getInfo().secondary==rev->getInfo().primary) {
-                    sub->addEdge(rev,1);
+                if (sub.primary==rev.primary||sub.secondary==rev.primary) {
+                    g->findVertex(sub.title)->addEdge(g->findVertex(rev.name),1);
                 }
             }
         }
@@ -36,8 +66,8 @@ void runGenerateAssignments(vector<Vertex<Submission>*> subs, vector<Vertex<Revi
     if (ctrl.genAssignments==3){
         for (auto sub: subs) {
             for (auto rev: revs) {
-                if ((sub->getInfo().primary==rev->getInfo().primary)||(sub->getInfo().primary==rev->getInfo().secondary)||(sub->getInfo().secondary==rev->getInfo().primary)||(sub->getInfo().secondary==rev->getInfo().secondary)) {
-                    sub->addEdge(rev,1);
+                if ((sub.primary==rev.primary)||(sub.primary==rev.secondary)||(sub.secondary==rev.primary)||(sub.secondary==rev.secondary)) {
+                    g->findVertex(sub.title)->addEdge(g->findVertex(rev.name),1);
                 }
             }
         }
@@ -98,7 +128,7 @@ void augmentFlowAlongPath(Vertex<T> *s, Vertex<T> *t, double f) {
 }
 
 template <class T>
-void runMaxFlowEdmondsKarp(Graph<T> *g, int source, int target) {
+void runMaxFlowEdmondsKarp(Graph<T> *g, string source, string target) {
     Vertex<T>* s = g->findVertex(source);
     Vertex<T>* t = g->findVertex(target);
     vector<Edge<T>*> edges;

@@ -13,9 +13,7 @@ bool output(const string& filename,
                   vector<Submission>& subs,
                   vector<Reviewer>& revs,
                   Parameters& params,
-                  Control& ctrl) {
-
-}
+                  Control& ctrl);
 
 
 #endif //PROJETO1_OUTPUT_H
