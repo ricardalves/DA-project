@@ -1,10 +1,50 @@
 //
-// Created by pedrodomingos on 2026-03-19.
+// Created by pedrodomingos on 2026-03-21.
 //
-#include "Graph.h"
+
+#include "AssignmentTool.h"
 #include <queue>
-#include <vector>
-using namespace std;
+
+void runGenerateAssignments(vector<Vertex<Submission>*> subs, vector<Vertex<Reviewer>*> revs, Control ctrl) {
+    if (ctrl.genAssignments==0){
+        for (auto sub: subs) {
+            for (auto rev: revs) {
+                if ((sub->getInfo().primary==rev->getInfo().primary)||(sub->getInfo().primary==rev->getInfo().secondary)||(sub->getInfo().secondary==rev->getInfo().primary)||(sub->getInfo().secondary==rev->getInfo().secondary)) {
+                    sub->addEdge(rev,1);
+                }
+            }
+        }
+    }
+    if (ctrl.genAssignments==1) {
+        for (auto sub: subs) {
+            for (auto rev: revs) {
+                if (sub->getInfo().primary==rev->getInfo().primary) {
+                    sub->addEdge(rev,1);
+                }
+            }
+        }
+    }
+    if (ctrl.genAssignments==2) {
+        for (auto sub: subs) {
+            for (auto rev: revs) {
+                if (sub->getInfo().primary==rev->getInfo().primary||sub->getInfo().secondary==rev->getInfo().primary) {
+                    sub->addEdge(rev,1);
+                }
+            }
+        }
+    }
+    if (ctrl.genAssignments==3){
+        for (auto sub: subs) {
+            for (auto rev: revs) {
+                if ((sub->getInfo().primary==rev->getInfo().primary)||(sub->getInfo().primary==rev->getInfo().secondary)||(sub->getInfo().secondary==rev->getInfo().primary)||(sub->getInfo().secondary==rev->getInfo().secondary)) {
+                    sub->addEdge(rev,1);
+                }
+            }
+        }
+    }
+}
+
+
 
 template <class T>
 void testAndVisit(std::queue< Vertex<T>*> &q, Edge<T> *e, Vertex<T> *w, double residual) {
@@ -58,7 +98,7 @@ void augmentFlowAlongPath(Vertex<T> *s, Vertex<T> *t, double f) {
 }
 
 template <class T>
-void edmondsKarp(Graph<T> *g, int source, int target) {
+void runMaxFlowEdmondsKarp(Graph<T> *g, int source, int target) {
     Vertex<T>* s = g->findVertex(source);
     Vertex<T>* t = g->findVertex(target);
     vector<Edge<T>*> edges;
