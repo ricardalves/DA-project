@@ -35,6 +35,8 @@ Graph<string>* createGraph(const string& filename) {
     return graph;
 }
 
+
+
 void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Reviewer> revs, Control ctrl) {
     if (ctrl.genAssignments==0){
         for (auto sub: subs) {
