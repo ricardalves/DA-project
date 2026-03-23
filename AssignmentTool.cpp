@@ -28,7 +28,7 @@ Graph<string>* createGraph(const string& filename) {
     for (auto r: revs) {
         graph->addVertex(r.name);
         revs_ver.push_back(r);
-        graph->addEdge(r.name,"Target",params.maxReviewsRev);
+        graph->addEdge(r.name," Cameroon vs Switzerland:Target",params.maxReviewsRev);
     }
     runGenerateAssignments(graph,subs_ver,revs_ver,ctrl);
     //runMaxFlowEdmondsKarp(graph,"Source","Target");

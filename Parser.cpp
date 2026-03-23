@@ -11,7 +11,7 @@
 // Helper function to remove spaces, \n, and quotes from a string
 void trim(std::string &s) {
     size_t start = s.find_first_not_of(" \n\"");
-    size_t end = s.find_last_not_of(" \t\r\n\"");
+    size_t end = s.find_last_not_of(" \n\"");
     if (start == std::string::npos) s = "";
     else s = s.substr(start, end - start + 1);
 }
