@@ -41,7 +41,7 @@ void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Re
     if (ctrl.genAssignments==0){
         for (auto sub: subs) {
             for (auto rev: revs) {
-                if ((sub.primary==rev.primary)||(sub.primary==rev.secondary)||(sub.secondary==rev.primary)||(sub.secondary==rev.secondary)) {
+                if ((sub.primary==rev.primary)||(sub.primary==rev.secondary)||(sub.secondary==rev.primary)||(sub.secondary==rev.secondary && (sub.secondary!=0||rev.secondary!=0))) {
                     g->findVertex(sub.title)->addEdge(g->findVertex(rev.name),1);
                 }
             }
@@ -68,7 +68,7 @@ void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Re
     if (ctrl.genAssignments==3){
         for (auto sub: subs) {
             for (auto rev: revs) {
-                if ((sub.primary==rev.primary)||(sub.primary==rev.secondary)||(sub.secondary==rev.primary)||(sub.secondary==rev.secondary)) {
+                if ((sub.primary==rev.primary)||(sub.primary==rev.secondary)||(sub.secondary==rev.primary)||(sub.secondary==rev.secondary && (sub.secondary!=0||rev.secondary!=0))) {
                     g->findVertex(sub.title)->addEdge(g->findVertex(rev.name),1);
                 }
             }
@@ -76,6 +76,9 @@ void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Re
     }
 }
 
+void runRiskAnalysis() {
+
+}
 
 
 template <class T>
