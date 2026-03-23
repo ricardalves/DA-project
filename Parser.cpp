@@ -11,7 +11,7 @@
 // Helper function to remove spaces, \n, and quotes from a string
 void trim(std::string &s) {
     size_t start = s.find_first_not_of(" \n\"");
-    size_t end = s.find_last_not_of(" \t\r\n\"");
+    size_t end = s.find_last_not_of(" n\"");
     if (start == std::string::npos) s = "";
     else s = s.substr(start, end - start + 1);
 }
@@ -32,10 +32,10 @@ bool parseDataset(const std::string& filename, std::vector<Submission>& subs, st
         if (line.empty()) continue;
         if (line[0] == '#')
         {
-            if (line.find("#Submissions") != std::string::npos) section = SUBMISSIONS;
-            else if (line.find("#Reviewers") != std::string::npos) section = REVIEWERS;
-            else if (line.find("#Parameters") != std::string::npos) section = PARAMETERS;
-            else if (line.find("#Control") != std::string::npos) section = CONTROL;
+            if (line=="#Submissions") section = SUBMISSIONS;
+            else if (line=="#Reviewers") section = REVIEWERS;
+            else if (line=="#Parameters") section = PARAMETERS;
+            else if (line=="#Control") section = CONTROL;
             continue;
         }
 

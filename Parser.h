@@ -3,7 +3,7 @@
 //
 /**
  * @file Parser.h
- * @brief CSV parsing functions.
+ * @brief CSV parsing function.
  */
 #ifndef PARSER_H
 #define PARSER_H
