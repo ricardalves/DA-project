@@ -37,7 +37,7 @@ Graph<string>* createGraph(graph_info info) {
         graph->addVertex(s.title);//usei title e não o email, pq pode ser a mesma pessoa a postar o artigo
         subs_ver.push_back(s);
         graph->addEdge("Source",s.title,info.parameters.minReviewsSub);//conecta o Source aos vértices de submission
-        //graph->findVertex(s.title)->setNum(s.id);
+        graph->findVertex(s.title)->setNum(s.id);
     }
     for (auto r: info.reviewers) {
         graph->addVertex(r.email);

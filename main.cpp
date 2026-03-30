@@ -1,6 +1,4 @@
-//
-// Created by pedrodomingos on 2026-03-21.
-//
+#include "Output.h"
 #include "Graph.h"
 #include "DataStructures.h"
 #include <vector>
@@ -11,7 +9,7 @@
 using namespace std;
 
 void displayAssignmentResults(Graph<string>* graph, const graph_info& info) {
-    cout << "\n=== RESULTS DISPLAY ===" << endl;
+    cout << "\n\n=== RESULTS DISPLAY ===" << endl;
 
     Vertex<string>* source = graph->findVertex("Source");
     int totalAssignments = 0;
@@ -28,8 +26,8 @@ void displayAssignmentResults(Graph<string>* graph, const graph_info& info) {
                     if (rev_edge->getFlow() > 0 && rev_edge->getDest()->getInfo() != "Source") {
                         Vertex<string>* rev_vertex = rev_edge->getDest();
 
-                        cout << "Submission '" << sub_vertex->getInfo()
-                             << "' assigned to Reviewer '" << rev_vertex->getInfo() << "'" << endl;
+                        cout << "Submission " << sub_vertex->getNum()
+                             << " assigned to Reviewer " << rev_vertex->getNum() << endl;
 
                         num_reviews++;
                         totalAssignments++;
@@ -37,8 +35,8 @@ void displayAssignmentResults(Graph<string>* graph, const graph_info& info) {
                 }
 
                 if (num_reviews < info.parameters.minReviewsSub) {
-                    cout << "  -> [WARNING] Submission '" << sub_vertex->getInfo()
-                         << "' needs " << (info.parameters.minReviewsSub - num_reviews)
+                    cout << "  -> [WARNING] Submission " << sub_vertex->getNum()
+                         << " needs " << (info.parameters.minReviewsSub - num_reviews)
                          << " more review(s)!" << endl;
                 }
             }
@@ -52,8 +50,8 @@ void displayAssignmentResults(Graph<string>* graph, const graph_info& info) {
                 for (auto rev_edge : sub_vertex->getAdj()) {
                     if (rev_edge->getFlow() > 0 && rev_edge->getDest()->getInfo() != "Source") {
                         Vertex<string>* rev_vertex = rev_edge->getDest();
-                        cout << "Source -> " << sub_vertex->getInfo()
-                             << " -> " << rev_vertex->getInfo() << " -> Target" << endl;
+                        cout << "Source -> " << sub_vertex->getNum()
+                             << " -> " << rev_vertex->getNum() << " -> Target" << endl;
                     }
                 }
             }
@@ -61,19 +59,29 @@ void displayAssignmentResults(Graph<string>* graph, const graph_info& info) {
     }
     cout << "-----------------------" << endl;
     cout << "Total Assignments Made: " << totalAssignments << endl;
+    cout << "\n";
 }
 
 
 void displayRiskAnalysisResults(const vector<int>& risky_reviewers) {
-    cout << "At-risk Reviewers (IDs): ";
+    cout << "\n\n=== RISK ANALYSIS RESULTS ===" << endl;
+
     if (risky_reviewers.empty()) {
-        cout << "None. The assignment is always possible!" << endl;
+        cout << " [SUCCESS] No at-risk reviewers detected!" << endl;
+        cout << "           The assignment is always possible." << endl;
     } else {
-        for (int id : risky_reviewers) {
-            cout << id << " ";
+        cout << " [WARNING] Found " << risky_reviewers.size() << " at-risk reviewer(s)." << endl;
+        cout << " -> IDs: ";
+
+        for (size_t i = 0; i < risky_reviewers.size(); ++i) {
+            cout << risky_reviewers[i];
+            if (i < risky_reviewers.size() - 1) {
+                cout << ", ";
+            }
         }
         cout << endl;
     }
+    cout << "\n";
 }
 
 
@@ -87,50 +95,80 @@ void runMenu() {
     graph_info info = populateInfo(inputFile);
 
     if (info.submissions.empty() || info.reviewers.empty()) {
-        cerr << "Parsing Error" << endl;
         return;
     }
 
     while (true) {
-        cout << "\n--- Scientific Conference Organization Tool ---" << endl;
-        cout << "1. Run Assignment" << endl;
-        cout << "2. Run Risk Analysis" << endl;
-        cout << "3. Exit" << endl;
+        cout << "\n===============================================" << endl;
+        cout << "   Scientific Conference Organization Tool" << endl;
+        cout << "===============================================" << endl;
+        cout << " Current Dataset: " << inputFile << endl;
+        cout << "-----------------------------------------------" << endl;
+        cout << " 1. Load a Different Dataset" << endl;
+        cout << " 2. View Current Dataset Info" << endl;
+        cout << " 3. Run Assignment" << endl;
+        cout << " 4. Run Risk Analysis" << endl;
+        cout << " 5. Exit" << endl;
+        cout << "===============================================" << endl;
         cout << "Select an option: ";
 
         if (!(cin >> choice)) {
             cin.clear();
-            cin.ignore('\n');
+            cin.ignore(10000,'\n');
             cout << "Invalid input. Please enter a number." << endl;
             continue;
         }
 
         switch (choice) {
             case 1: {
-                cout << "\nRunning Assignment..." << endl;
+                string new_inputFile;
+                cout << "\nEnter the new dataset filename: ";
+                cin >> new_inputFile;
+                graph_info new_info = populateInfo(new_inputFile);
+                if (new_info.submissions.empty() || new_info.reviewers.empty()) {
+                    cout << "Keeping the previous dataset." << endl;
+                } else {
+                    inputFile = new_inputFile;
+                    info = new_info;
+                    cout << "Dataset successfully updated!" << endl;
+                }
+                break;
+            }
+            case 2: {
+                cout << "\n\n Dataset Information " << endl;
+                cout << "Total Submissions: " << info.submissions.size() << endl;
+                cout << "Total Reviewers: " << info.reviewers.size() << endl;
+                cout << "Min Reviews per Submission: " << info.parameters.minReviewsSub << endl;
+                cout << "Max Reviews per Reviewer: " << info.parameters.maxReviewsRev << endl;
+                cout << "Control - Generate Assignments: " << info.control.genAssignments << endl;
+                cout << "Control - Risk Analysis Mode: " << info.control.riskAnalysis << "\n" << endl;
+                break;
+            }
+            case 3: {
                 Graph<string>* graph = createGraph(info);
                 if (graph != nullptr) {
-                    cout << "Processing successfully completed" << endl;
 
-
-
-                    // Output RiskAnalysis
+                    displayAssignmentResults(graph,info);
 
                     delete graph;
                 }
                 break;
             }
-            case 2: {
-                cout << "\nRunning Risk Analysis..." << endl;
-                vector<int> risky_reviewers = runRiskAnalysis(info);
+            case 4: {
 
-                // Output RiskAnalysis
+                if (info.control.riskAnalysis == 0) {
+                    cout << "Risk Analysis is disabled in this dataset" << endl;
+                }
+                else {
+                    vector<int> risky_reviewers = runRiskAnalysis(info);
+                    displayRiskAnalysisResults(risky_reviewers);
+                }
+                break;
             }
-            case 3:
-                cout << "Exiting the program. Good work!" << endl;
+            case 5:
                 return;
             default:
-                cout << "Invalid option. Choose between 1 and 3." << endl;
+                cout << "Invalid option. Choose between 1 and 5." << endl;
         }
     }
 }
@@ -139,24 +177,22 @@ void runMenu() {
 
 void runBatchMode(const string& inputFile, const string& outputFile) {
 
-    cout << "Input: " << inputFile << " | Output: " << outputFile << endl;
-
     graph_info info = populateInfo(inputFile);
     if (info.submissions.empty() || info.reviewers.empty()) {
-        cerr << "Parsing Error" << endl;
         return;
     }
 
+    info.control.outputFileName = outputFile;
+
     Graph<string>* graph = createGraph(info);
     if (graph != nullptr) {
-        cout << "Processing successfully completed" << endl;
 
+        vector<int> risky_reviewers;
         if (info.control.riskAnalysis > 0) {
-            vector<int> risky_reviewers = runRiskAnalysis(info);
-            // Output RiskAnalysis
+            risky_reviewers = runRiskAnalysis(info);
         }
 
-        // put on output file
+        generateOutput(graph, info, risky_reviewers);
 
         delete graph;
     }
