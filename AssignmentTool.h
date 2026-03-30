@@ -14,15 +14,29 @@
 
 using namespace std;
 
-Graph<string>* createGraph(const string& filename);
+
+//fiz esta struct porque tornou muito mais versátil o uso das funções para evitar chamar a funcão do parser
+struct graph_info {
+    vector<Submission> submissions;
+    vector<Reviewer> reviewers;
+    Parameters parameters;
+    Control control;
+};
+
+
+graph_info populateInfo(const string& filename);
+
+Graph<string>* createGraph(graph_info info);
 
 void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Reviewer> revs, Control ctrl);
 
-void runRiskAnalysis();
+
+vector<int> runRiskAnalysis(graph_info);
 
 template <class T>
 void runMaxFlowEdmondsKarp(Graph<T> *g, string source, string target);
 
+bool isAssignmentValid(const Graph<string>* g,Parameters params);
 
 
 

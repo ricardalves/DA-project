@@ -12,13 +12,20 @@ using namespace std;
 
 
 int main() {
-    Graph<string>* graph=createGraph("input/dataset1.csv");
-    for (auto v:graph->getVertexSet()) {
+    graph_info gi=populateInfo("input/dataset14.csv");
+    Graph<string>* g=createGraph(gi);
+    for (auto v:g->getVertexSet()) {
         cout<<"Vértice: "<<v->getInfo()<<endl;
+        cout<<"Adjacents: ";
         for (auto e: v->getAdj()) {
-            cout<<e->getDest()->getInfo()<<" ";
+            cout<<"Flow: "<<e->getFlow()<<" "<<e->getDest()->getInfo()<<" ";
         }
         cout<<endl;
     }
+    vector<int> risk=runRiskAnalysis(gi);
+    for (int i:risk) {
+        cout<<i<<endl;
+    }
+    cout<<"lista de necessários a cima"<<endl;
     return 0;
 }

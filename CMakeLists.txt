@@ -8,5 +8,4 @@ add_executable(Projeto1
         AssignmentTool.cpp
         Parser.cpp
         Output.cpp
-
 )
