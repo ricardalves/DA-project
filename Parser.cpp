@@ -32,10 +32,10 @@ bool parseDataset(const std::string& filename, std::vector<Submission>& subs, st
         if (line.empty()) continue;
         if (line[0] == '#')
         {
-            if (line.find("#Submissions") != std::string::npos) section = SUBMISSIONS;
-            else if (line.find("#Reviewers") != std::string::npos) section = REVIEWERS;
-            else if (line.find("#Parameters") != std::string::npos) section = PARAMETERS;
-            else if (line.find("#Control") != std::string::npos) section = CONTROL;
+            if (line=="#Submissions") section = SUBMISSIONS;
+            else if (line=="#Reviewers") section = REVIEWERS;
+            else if (line=="#Parameters") section = PARAMETERS;
+            else if (line=="#Control") section = CONTROL;
             continue;
         }
 
