@@ -55,15 +55,19 @@ Graph<string>* createGraph(graph_info info) {
 void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Reviewer> revs, Control ctrl) {
     set<string> verify;//para evitar reviewers repetidos (olhar csv 2 e 3) (size_t pq o size de um set é desse tipo)
     size_t n=0;//variável para ir checkando se o set aumenta
+    vector<Reviewer> rev_unique;//vector sem revisores duplicados
+    for (auto rev: revs) {//vamos analisar o vector original
+        verify.insert(rev.email);
+        n++;
+        if (n>verify.size()) {//se n for maior que o conjunto é para descartar o item pois é repetido
+            n=verify.size();//endireitamos a variavel
+            continue;//skipamos para o proximo elemento
+        }
+        rev_unique.push_back(rev);//se nao acontecer é pq é um novo revisor e ent adiconados ao vector filtrado
+    }
     if (ctrl.genAssignments==0){//contando primárias e secundárias
         for (auto sub: subs) {
-            for (auto rev: revs) {
-                verify.insert(rev.email);
-                n++;
-                if (n>verify.size()) {
-                    n=verify.size();
-                    continue;//se o set não aumentar é pq o reviewer é o mesmo então skipa para o próximo
-                }
+            for (auto rev: rev_unique) {
                 if ((sub.primary==rev.primary)||(sub.primary==rev.secondary)||(sub.secondary==rev.primary)||(sub.secondary==rev.secondary && (sub.secondary!=0||rev.secondary!=0))) {
                     g->findVertex(sub.title)->addEdge(g->findVertex(rev.email),1);
                 }
@@ -72,13 +76,7 @@ void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Re
     }
     if (ctrl.genAssignments==1) {//contando só primárias
         for (auto sub: subs) {
-            for (auto rev: revs) {
-                verify.insert(rev.email);
-                n++;
-                if (n>verify.size()) {
-                    n=verify.size();
-                    continue;
-                }
+            for (auto rev: rev_unique) {
                 if (sub.primary==rev.primary) {
                     g->findVertex(sub.title)->addEdge(g->findVertex(rev.email),1);
                 }
@@ -87,13 +85,7 @@ void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Re
     }
     if (ctrl.genAssignments==2) {//contando primárias e secundárias das submission e as primárias dos reviewers
         for (auto sub: subs) {
-            for (auto rev: revs) {
-                verify.insert(rev.email);
-                n++;
-                if (n>verify.size()) {
-                    n=verify.size();
-                    continue;
-                }
+            for (auto rev: rev_unique) {
                 if (sub.primary==rev.primary||sub.secondary==rev.primary) {
                     g->findVertex(sub.title)->addEdge(g->findVertex(rev.email),1);
                 }
@@ -102,13 +94,7 @@ void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Re
     }
     if (ctrl.genAssignments==3){
         for (auto sub: subs) {
-            for (auto rev: revs) {
-                verify.insert(rev.email);
-                n++;
-                if (n>verify.size()) {
-                    n=verify.size();
-                    continue;
-                }
+            for (auto rev: rev_unique) {
                 if ((sub.primary==rev.primary)||(sub.primary==rev.secondary)||(sub.secondary==rev.primary)||(sub.secondary==rev.secondary && (sub.secondary!=0||rev.secondary!=0))) {
                     g->findVertex(sub.title)->addEdge(g->findVertex(rev.email),1);
                 }
