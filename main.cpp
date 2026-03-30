@@ -10,6 +10,72 @@
 #include "AssignmentTool.h"
 using namespace std;
 
+void displayAssignmentResults(Graph<string>* graph, const graph_info& info) {
+    cout << "\n=== RESULTS DISPLAY ===" << endl;
+
+    Vertex<string>* source = graph->findVertex("Source");
+    int totalAssignments = 0;
+
+    if (source != nullptr) {
+        cout << "--- Assigned Reviews ---" << endl;
+
+        for (auto sub_edge : source->getAdj()) {
+            if (sub_edge->getFlow() > 0) {
+                Vertex<string>* sub_vertex = sub_edge->getDest();
+                int num_reviews = 0;
+
+                for (auto rev_edge : sub_vertex->getAdj()) {
+                    if (rev_edge->getFlow() > 0 && rev_edge->getDest()->getInfo() != "Source") {
+                        Vertex<string>* rev_vertex = rev_edge->getDest();
+
+                        cout << "Submission '" << sub_vertex->getInfo()
+                             << "' assigned to Reviewer '" << rev_vertex->getInfo() << "'" << endl;
+
+                        num_reviews++;
+                        totalAssignments++;
+                    }
+                }
+
+                if (num_reviews < info.parameters.minReviewsSub) {
+                    cout << "  -> [WARNING] Submission '" << sub_vertex->getInfo()
+                         << "' needs " << (info.parameters.minReviewsSub - num_reviews)
+                         << " more review(s)!" << endl;
+                }
+            }
+        }
+
+        cout << "\n--- Full Sequence Paths (Origin -> Destination) ---" << endl;
+
+        for (auto sub_edge : source->getAdj()) {
+            if (sub_edge->getFlow() > 0) {
+                Vertex<string>* sub_vertex = sub_edge->getDest();
+                for (auto rev_edge : sub_vertex->getAdj()) {
+                    if (rev_edge->getFlow() > 0 && rev_edge->getDest()->getInfo() != "Source") {
+                        Vertex<string>* rev_vertex = rev_edge->getDest();
+                        cout << "Source -> " << sub_vertex->getInfo()
+                             << " -> " << rev_vertex->getInfo() << " -> Target" << endl;
+                    }
+                }
+            }
+        }
+    }
+    cout << "-----------------------" << endl;
+    cout << "Total Assignments Made: " << totalAssignments << endl;
+}
+
+
+void displayRiskAnalysisResults(const vector<int>& risky_reviewers) {
+    cout << "At-risk Reviewers (IDs): ";
+    if (risky_reviewers.empty()) {
+        cout << "None. The assignment is always possible!" << endl;
+    } else {
+        for (int id : risky_reviewers) {
+            cout << id << " ";
+        }
+        cout << endl;
+    }
+}
+
 
 void runMenu() {
     int choice = 0;
@@ -45,6 +111,8 @@ void runMenu() {
                 Graph<string>* graph = createGraph(info);
                 if (graph != nullptr) {
                     cout << "Processing successfully completed" << endl;
+
+
 
                     // Output RiskAnalysis
 
