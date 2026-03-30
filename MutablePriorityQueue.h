@@ -1,4 +1,7 @@
-
+/**
+* @file MutablePriorityQueue.h
+ * @brief A priority queue that allows updating the value of its elements.
+ */
 
 #ifndef DA_TP_CLASSES_MUTABLEPRIORITYQUEUE
 #define DA_TP_CLASSES_MUTABLEPRIORITYQUEUE
@@ -6,7 +9,10 @@
 #include <vector>
 
 
-
+/**
+ * @brief A generic mutable priority queue.
+ * @tparam T Type of elements stored in the queue.
+ */
 template <class T>
 class MutablePriorityQueue {
     std::vector<T *> H;
@@ -15,9 +21,25 @@ class MutablePriorityQueue {
     inline void set(unsigned i, T * x);
 public:
     MutablePriorityQueue();
+    /**
+     * @brief Inserts a new element into the queue.
+     * @param x Pointer to the element to insert.
+     */
     void insert(T * x);
+    /**
+     * @brief Extracts the element with the minimum value.
+     * @return Pointer to the extracted element.
+     */
     T * extractMin();
+    /**
+     * @brief Updates the position of an element in the queue after its key decreased.
+     * @param x Pointer to the element to update.
+     */
     void decreaseKey(T * x);
+    /**
+     * @brief Checks if the queue is empty.
+     * @return True if empty, False otherwise.
+     */
     bool empty();
 };
 
