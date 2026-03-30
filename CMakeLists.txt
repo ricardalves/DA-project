@@ -1,6 +1,11 @@
-# No teu CMakeLists.txt
-add_executable(Projeto_DA
+cmake_minimum_required(VERSION 3.22)
+project(Projeto1)
+
+set(CMAKE_CXX_STANDARD 17)
+
+add_executable(Projeto1
         main.cpp
-        AssignmentTool.cpp   # <--- Isto é o que falta!
+        AssignmentTool.cpp
         Parser.cpp
+        Output.cpp
 )

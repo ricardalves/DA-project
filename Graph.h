@@ -55,7 +55,6 @@ protected:
     T info;                // info node
     std::vector<Edge<T> *> adj;  // outgoing edges
 
-    // auxiliary fields
     bool visited = false; // used by DFS, BFS, Prim ...
     bool processing = false; // used by isDAG (in addition to the visited attribute)
     int low = -1, num = -1; // used by SCC Tarjan
@@ -234,6 +233,10 @@ template <class T>
 void Vertex<T>::setNum(int value) {
     this->num = value;
 }
+
+
+
+
 
 template <class T>
 std::vector<Edge<T>*> Vertex<T>::getAdj() const {

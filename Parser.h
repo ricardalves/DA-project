@@ -9,6 +9,7 @@
 #define PARSER_H
 
 #include <vector>
+#include <set>
 #include <string>
 #include "DataStructures.h"
 
