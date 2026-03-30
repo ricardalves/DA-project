@@ -11,7 +11,6 @@
 #include <vector>
 using namespace std;
 
-//esta função preenche os campos da struct usando a função do parser
 graph_info populateInfo(const string &filename) {
     graph_info info;
     vector<Submission> subs;
@@ -26,7 +25,6 @@ graph_info populateInfo(const string &filename) {
     return info;
 }
 
-//função para criar o grafo
 Graph<string>* createGraph(graph_info info) {
     Graph<string>* graph= new Graph<string>;
     vector<Submission> subs_ver;
@@ -34,38 +32,38 @@ Graph<string>* createGraph(graph_info info) {
     graph->addVertex("Source");
     graph->addVertex("Target");
     for (auto s: info.submissions) {
-        graph->addVertex(s.title);//usei title e não o email, pq pode ser a mesma pessoa a postar o artigo
+        graph->addVertex(s.title);
         subs_ver.push_back(s);
-        graph->addEdge("Source",s.title,info.parameters.minReviewsSub);//conecta o Source aos vértices de submission
+        graph->addEdge("Source",s.title,info.parameters.minReviewsSub);
         graph->findVertex(s.title)->setNum(s.id);
     }
     for (auto r: info.reviewers) {
         graph->addVertex(r.email);
         revs_ver.push_back(r);
-        graph->addEdge(r.email,"Target",info.parameters.maxReviewsRev);//conecta os vértices dos reviewers ao vértice target
-        graph->findVertex(r.email)->setNum(r.id);//este num vai ser necessário para ajudar no output do risk analysis
+        graph->addEdge(r.email,"Target",info.parameters.maxReviewsRev);
+        graph->findVertex(r.email)->setNum(r.id);
     }
-    runGenerateAssignments(graph,subs_ver,revs_ver,info.control);//função que conecta submissions aos reviewers
-    runMaxFlowEdmondsKarp(graph,"Source","Target");//aplicação do algortimo de maxflow (O(V*E²))
+    runGenerateAssignments(graph,subs_ver,revs_ver,info.control);
+    runMaxFlowEdmondsKarp(graph,"Source","Target");
     return graph;
 }
 
 
 
 void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Reviewer> revs, Control ctrl) {
-    set<string> verify;//para evitar reviewers repetidos (olhar csv 2 e 3) (size_t pq o size de um set é desse tipo)
-    size_t n=0;//variável para ir checkando se o set aumenta
-    vector<Reviewer> rev_unique;//vector sem revisores duplicados
-    for (auto rev: revs) {//vamos analisar o vector original
+    set<string> verify;
+    size_t n=0;
+    vector<Reviewer> rev_unique;
+    for (auto rev: revs) {
         verify.insert(rev.email);
         n++;
-        if (n>verify.size()) {//se n for maior que o conjunto é para descartar o item pois é repetido
-            n=verify.size();//endireitamos a variavel
-            continue;//skipamos para o proximo elemento
+        if (n>verify.size()) {
+            n=verify.size();
+            continue;
         }
-        rev_unique.push_back(rev);//se nao acontecer é pq é um novo revisor e ent adiconados ao vector filtrado
+        rev_unique.push_back(rev);
     }
-    if (ctrl.genAssignments==0){//contando primárias e secundárias
+    if (ctrl.genAssignments==0){
         for (auto sub: subs) {
             for (auto rev: rev_unique) {
                 if ((sub.primary==rev.primary)||(sub.primary==rev.secondary)||(sub.secondary==rev.primary)||(sub.secondary==rev.secondary && (sub.secondary!=0||rev.secondary!=0))) {
@@ -74,7 +72,7 @@ void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Re
             }
         }
     }
-    if (ctrl.genAssignments==1) {//contando só primárias
+    if (ctrl.genAssignments==1) {
         for (auto sub: subs) {
             for (auto rev: rev_unique) {
                 if (sub.primary==rev.primary) {
@@ -83,7 +81,7 @@ void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Re
             }
         }
     }
-    if (ctrl.genAssignments==2) {//contando primárias e secundárias das submission e as primárias dos reviewers
+    if (ctrl.genAssignments==2) {
         for (auto sub: subs) {
             for (auto rev: rev_unique) {
                 if (sub.primary==rev.primary||sub.secondary==rev.primary) {
@@ -103,8 +101,11 @@ void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Re
     }
 }
 
-
-
+/**
+ * @brief Auxiliary function used by BFS to visit an adjacent vertex and mark its augmenting path.
+ * @param q Reference to the queue used in BFS.
+ * @param residual The remaining capacity (residual flow) on the edge.
+ */
 template <class T>
 void testAndVisit(std::queue< Vertex<T>*> &q, Edge<T> *e, Vertex<T> *w, double residual) {
     if (! w->isVisited() && residual > 0) {
@@ -114,6 +115,10 @@ void testAndVisit(std::queue< Vertex<T>*> &q, Edge<T> *e, Vertex<T> *w, double r
     }
 }
 
+/**
+ * @brief Finds an augmenting path in the residual graph using Breadth-First Search (BFS).
+ * @return True if a valid augmenting path from source to target is found, False otherwise.
+ */
 template <class T>
 bool findAugmentingPath(Graph<T> *g, Vertex<T> *s, Vertex<T> *t) {
     for (auto v: g->getVertexSet()) {
@@ -133,6 +138,10 @@ bool findAugmentingPath(Graph<T> *g, Vertex<T> *s, Vertex<T> *t) {
     return t->isVisited();
 }
 
+/**
+ * @brief Determines the minimum residual capacity (bottleneck) along a discovered augmenting path.
+ * @return The bottleneck flow value that can be pushed through the path.
+ */
 template <class T>
 double findMinResidualAlongPath(Vertex<T> *s, Vertex<T> *t) {
     double f = INF;
@@ -146,6 +155,10 @@ double findMinResidualAlongPath(Vertex<T> *s, Vertex<T> *t) {
     return f;
 }
 
+/**
+ * @brief Updates the flow along the augmenting path and inversely updates the residual edges.
+ * @param f The flow value to add to the edges.
+ */
 template <class T>
 void augmentFlowAlongPath(Vertex<T> *s, Vertex<T> *t, double f) {
     Vertex<T>* v=t;
@@ -191,34 +204,33 @@ void runMaxFlowEdmondsKarp(Graph<T> *g, string source, string target) {
 
 
 
-//esta função serve para verificar se é possível atribuir tudo certinho sem necessidade de precisar de mais reviewers
-bool isAssignmentValid(const Graph<string>* g, Parameters params) {//será chamada na função abaixo, talvez percebam melhor
+bool isAssignmentValid(const Graph<string>* g, Parameters params) {
     for (auto e:g->findVertex("Source")->getAdj()) {
-        if (e->getFlow()<params.minReviewsSub) return false;//se o flow que sair da Source para uma submission for menor que o mínimo preciso signifca que a ausencia de um certo reviewer faz a diferenca e esse será necessario
+        if (e->getFlow()<params.minReviewsSub) return false;
     }
     return true;
 }
 
 
-vector<int> runRiskAnalysis(graph_info info) {//recebe a informação mas o mais importante será os reviewers
-    vector<int> ids;//neste vector estarão os ids dos reviewers que se ausentando farão a diferença
-    int id_rev;//variável para guardar o ID de cada reviewer
-    if (info.control.riskAnalysis==1) { //será analisado o caso se 1 deles faltar
-        for (auto rev: info.reviewers) {//percorremos todos os reviewers
-            vector<Reviewer> revs;//onde vamos guardar os reviewers que sao diferentes ao que tá a ser analisado no primeiro loop
+vector<int> runRiskAnalysis(graph_info info) {
+    vector<int> ids;
+    int id_rev;
+    if (info.control.riskAnalysis==1) {
+        for (auto rev: info.reviewers) {
+            vector<Reviewer> revs;
             for (auto rev1: info.reviewers) {
-                if (rev1.id!=rev.id) {//se nao for o reviewer do primeiro loop
-                    revs.push_back(rev1);//adicionas ao vector
+                if (rev1.id!=rev.id) {
+                    revs.push_back(rev1);
                 }
-                else id_rev=rev1.id;//se for guardamos o id dele na variável
+                else id_rev=rev1.id;
             }
-            info.reviewers=revs;//atualizamos a informacao, mais especificamente os reviewers, deixando de fora o do primeiro loop(é assim que deixamos de fora 1 a 1 para analisar cada casa de ausencia singular)
-            Graph<string>* g = createGraph(info);//criamos um grafo chamando a funcao de criaçao coma info atualizada
-            if (!isAssignmentValid(g,info.parameters)) ids.push_back(id_rev);//se não se conseguir chegar a uma atribuiçao o sujeito que tá ausente é necessário, entao adicionamos ao vector dos ID's dos necessários
-            delete g;//damos delete no grafo criado para analisar o caso para economizar memória
+            info.reviewers=revs;
+            Graph<string>* g = createGraph(info);
+            if (!isAssignmentValid(g,info.parameters)) ids.push_back(id_rev);
+            delete g;
         }
     }
-    sort(ids.begin(), ids.end()); //este sort é para depois no ouput apresentar em ordem tal como pedido
-    ids.erase(unique(ids.begin(), ids.end()), ids.end());//apagar possíveis elementos duplos
-    return ids;//retornar o vector com os necessários
+    sort(ids.begin(), ids.end());
+    ids.erase(unique(ids.begin(), ids.end()), ids.end());
+    return ids;
 }
