@@ -1,3 +1,7 @@
+/**
+* @file Graph.h
+ * @brief Generic Graph structure for Flow and Network problems.
+ */
 #ifndef PROJETO1_GRAPH_H
 #define PROJETO1_GRAPH_H
 
@@ -11,6 +15,10 @@ class Edge;
 
 #define INF std::numeric_limits<double>::max()
 
+/**
+ * @brief Represents a vertex in the graph.
+ * @tparam T Type of the information stored in the vertex.
+ */
 template <class T>
 class Vertex {
 public:
@@ -25,7 +33,6 @@ public:
 
     int getNum() const;
     void setNum(int value);
-
     void setPath(Edge<T> *path);
     Edge<T> * addEdge(Vertex<T> *dest, double w);
     bool removeEdge(T in);
@@ -40,6 +47,10 @@ protected:
     void deleteEdge(Edge<T> *edge);
 };
 
+/**
+ * @brief Represents an edge connecting two vertices.
+ * @tparam T Type of the vertex information.
+ */
 template <class T>
 class Edge {
 public:
@@ -61,6 +72,10 @@ protected:
     double flow;
 };
 
+/**
+ * @brief Represents the graph structure.
+ * @tparam T Type of the vertex information.
+ */
 template <class T>
 class Graph {
 public:
