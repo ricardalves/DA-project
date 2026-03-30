@@ -45,14 +45,14 @@ Graph<string>* createGraph(graph_info info) {
         graph->addEdge(r.email,"Target",info.parameters.maxReviewsRev);//conecta os vértices dos reviewers ao vértice target
         graph->findVertex(r.email)->setNum(r.id);//este num vai ser necessário para ajudar no output do risk analysis
     }
-    runGenerateAssignments(graph,subs_ver,revs_ver,info.control);//função que conecta submissions aos reviewers
+    runGenerateAssignments(graph,subs_ver,revs_ver,info.parameters,info.control);//função que conecta submissions aos reviewers
     runMaxFlowEdmondsKarp(graph,"Source","Target");//aplicação do algortimo de maxflow (O(V*E²))
     return graph;
 }
 
 
 
-void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Reviewer> revs, Control ctrl) {
+void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Reviewer> revs, Parameters params,Control ctrl) {
     set<string> verify;//para evitar reviewers repetidos (olhar csv 2 e 3) (size_t pq o size de um set é desse tipo)
     size_t n=0;//variável para ir checkando se o set aumenta
     vector<Reviewer> rev_unique;//vector sem revisores duplicados
@@ -78,7 +78,32 @@ void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Re
         for (auto sub: subs) {
             for (auto rev: rev_unique) {
                 if (sub.primary==rev.primary) {
-                    g->findVertex(sub.title)->addEdge(g->findVertex(rev.email),1);
+                    bool match = false;
+
+                    // 1. Primary Sub -> Primary Rev
+                    if (params.primaryDomain == 1 && params.primaryExpertise == 1) {
+                        if (sub.primary == rev.primary) match = true;
+                    }
+
+                    // 2. Secondary Sub -> Primary Rev
+                    if (params.secondaryDomain == 1 && params.primaryExpertise == 1) {
+                        if (sub.secondary != 0 && sub.secondary == rev.primary) match = true;
+                    }
+
+                    // 3. Primary Sub -> Secondary Rev
+                    if (params.primaryDomain == 1 && params.secondaryExpertise == 1) {
+                        if (rev.secondary != 0 && sub.primary == rev.secondary) match = true;
+                    }
+
+                    // 4. Secondary Sub -> Secondary Rev
+                    if (params.secondaryDomain == 1 && params.secondaryExpertise == 1) {
+                        if (sub.secondary != 0 && rev.secondary != 0 && sub.secondary == rev.secondary) match = true;
+                    }
+
+                    // Se houver qualquer match válido segundo as regras do ficheiro, cria a aresta
+                    if (match) {
+                        g->findVertex(sub.title)->addEdge(g->findVertex(rev.email), 1);
+                    }
                 }
             }
         }
