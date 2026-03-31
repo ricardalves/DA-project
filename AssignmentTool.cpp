@@ -52,7 +52,7 @@ Graph<string>* createGraph(graph_info info) {
 
 
 void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Reviewer> revs, Parameters params,Control ctrl) {
-    set<string> verify;
+    set<int> verify;
     size_t n=0;
     vector<Reviewer> rev_unique;
     sort(subs.begin(), subs.end(), [](Submission a, Submission b) {
@@ -62,7 +62,7 @@ void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Re
             return a.id < b.id;
         });
     for (auto rev: revs) {
-        verify.insert(rev.email);
+        verify.insert(rev.id);
         n++;
         if (n>verify.size()) {
             n=verify.size();
@@ -222,12 +222,12 @@ bool isAssignmentValid(const Graph<string>* g, Parameters params) {
 vector<int> runRiskAnalysis(graph_info info) {
     vector<int> ids;
     int id_rev;
-    vector<Reviewer> revszinhos=info.reviewers;
+    vector<Reviewer> revs_original=info.reviewers;
     if (info.control.riskAnalysis==1) {
 
-        for (auto rev: info.reviewers) {
+        for (auto rev: revs_original) {
             vector<Reviewer> revs;
-            for (auto rev1: info.reviewers) {
+            for (auto rev1: revs_original) {
                 if (rev1.id!=rev.id) {
                     revs.push_back(rev1);
                 }
@@ -236,7 +236,7 @@ vector<int> runRiskAnalysis(graph_info info) {
             info.reviewers=revs;
             Graph<string>* g = createGraph(info);
             if (!isAssignmentValid(g,info.parameters)) ids.push_back(id_rev);
-            info.reviewers=revszinhos;
+            info.reviewers=revs_original;
             delete g;
         }
     }
