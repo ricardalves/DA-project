@@ -9,6 +9,7 @@
 #include <string>
 #include "Graph.h"
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 graph_info populateInfo(const string &filename) {
@@ -54,6 +55,12 @@ void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Re
     set<string> verify;
     size_t n=0;
     vector<Reviewer> rev_unique;
+    sort(subs.begin(), subs.end(), [](Submission a, Submission b) {
+      return a.id < b.id;
+    });
+    sort(revs.begin(), revs.end(), [](Reviewer a, Reviewer b) {
+            return a.id < b.id;
+        });
     for (auto rev: revs) {
         verify.insert(rev.email);
         n++;
@@ -63,6 +70,7 @@ void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Re
         }
         rev_unique.push_back(rev);
     }
+
     if (ctrl.genAssignments==0){
         for (auto sub: subs) {
             for (auto rev: rev_unique) {
