@@ -76,36 +76,17 @@ void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Re
     }
     if (ctrl.genAssignments==1) {//contando só primárias
         for (auto sub: subs) {
-            for (auto rev: rev_unique) {
-                if (sub.primary==rev.primary) {
-                    bool match = false;
+            for (auto rev : rev_unique) {
+                bool match = false;
+                if (params.primaryDomain == 1 && params.primaryExpertise == 1 && sub.primary == rev.primary) match = true;
+                if (params.secondaryDomain == 1 && params.primaryExpertise == 1 && sub.secondary != 0 && sub.secondary == rev.primary) match = true;
+                if (params.primaryDomain == 1 && params.secondaryExpertise == 1 && rev.secondary != 0 && sub.primary == rev.secondary) match = true;
+                if (params.secondaryDomain == 1 && params.secondaryExpertise == 1 && sub.secondary != 0 && rev.secondary != 0 && sub.secondary == rev.secondary) match = true;
 
-                    // 1. Primary Sub -> Primary Rev
-                    if (params.primaryDomain == 1 && params.primaryExpertise == 1) {
-                        if (sub.primary == rev.primary) match = true;
-                    }
-
-                    // 2. Secondary Sub -> Primary Rev
-                    if (params.secondaryDomain == 1 && params.primaryExpertise == 1) {
-                        if (sub.secondary != 0 && sub.secondary == rev.primary) match = true;
-                    }
-
-                    // 3. Primary Sub -> Secondary Rev
-                    if (params.primaryDomain == 1 && params.secondaryExpertise == 1) {
-                        if (rev.secondary != 0 && sub.primary == rev.secondary) match = true;
-                    }
-
-                    // 4. Secondary Sub -> Secondary Rev
-                    if (params.secondaryDomain == 1 && params.secondaryExpertise == 1) {
-                        if (sub.secondary != 0 && rev.secondary != 0 && sub.secondary == rev.secondary) match = true;
-                    }
-
-                    // Se houver qualquer match válido segundo as regras do ficheiro, cria a aresta
-                    if (match) {
-                        g->findVertex(sub.title)->addEdge(g->findVertex(rev.email), 1);
-                    }
-                }
+                
+                if (match) g->findVertex(sub.title)->addEdge(g->findVertex(rev.email), 1);
             }
+
         }
     }
     if (ctrl.genAssignments==2) {//contando primárias e secundárias das submission e as primárias dos reviewers
