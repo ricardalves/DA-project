@@ -48,7 +48,7 @@ Graph<string>* createGraph(graph_info info);
  * @param revs Vector of reviewers.
  * @param ctrl Control struct to determine the assignment mode.
  */
-void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Reviewer> revs, Control ctrl);
+void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Reviewer> revs, Parameters params,Control ctrl);
 
 /**
  * @brief Identifies critical reviewers whose absence prevents full assignment.

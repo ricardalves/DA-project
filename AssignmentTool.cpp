@@ -43,14 +43,14 @@ Graph<string>* createGraph(graph_info info) {
         graph->addEdge(r.email,"Target",info.parameters.maxReviewsRev);
         graph->findVertex(r.email)->setNum(r.id);
     }
-    runGenerateAssignments(graph,subs_ver,revs_ver,info.control);
+    runGenerateAssignments(graph,subs_ver,revs_ver,info.parameters,info.control);
     runMaxFlowEdmondsKarp(graph,"Source","Target");
     return graph;
 }
 
 
 
-void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Reviewer> revs, Control ctrl) {
+void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Reviewer> revs, Parameters params,Control ctrl) {
     set<string> verify;
     size_t n=0;
     vector<Reviewer> rev_unique;
@@ -74,11 +74,17 @@ void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Re
     }
     if (ctrl.genAssignments==1) {
         for (auto sub: subs) {
-            for (auto rev: rev_unique) {
-                if (sub.primary==rev.primary) {
-                    g->findVertex(sub.title)->addEdge(g->findVertex(rev.email),1);
-                }
+            for (auto rev : rev_unique) {
+                bool match = false;
+                if (params.primaryDomain == 1 && params.primaryExpertise == 1 && sub.primary == rev.primary) match = true;
+                if (params.secondaryDomain == 1 && params.primaryExpertise == 1 && sub.secondary != 0 && sub.secondary == rev.primary) match = true;
+                if (params.primaryDomain == 1 && params.secondaryExpertise == 1 && rev.secondary != 0 && sub.primary == rev.secondary) match = true;
+                if (params.secondaryDomain == 1 && params.secondaryExpertise == 1 && sub.secondary != 0 && rev.secondary != 0 && sub.secondary == rev.secondary) match = true;
+
+
+                if (match) g->findVertex(sub.title)->addEdge(g->findVertex(rev.email), 1);
             }
+
         }
     }
     if (ctrl.genAssignments==2) {

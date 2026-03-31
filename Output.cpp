@@ -23,15 +23,20 @@ struct Missing {
 };
 
 // finds out what domain "matched" the sub and the rev
-int getMatch(const Submission& sub, const Reviewer& rev, int genAssign) {
-    if (sub.primary == rev.primary) return sub.primary;
-    if (genAssign == 3 || genAssign == 0) {
-        if (sub.primary == rev.secondary && rev.secondary != 0) return sub.primary;
-        if (sub.secondary == rev.primary && sub.secondary != 0) return sub.secondary;
-        if (sub.secondary == rev.secondary && sub.secondary != 0) return sub.secondary;
+int getMatch(const Submission& sub, const Reviewer& rev, Parameters params) {
+    if (params.primaryDomain == 1 && params.primaryExpertise == 1) {
+        if (sub.primary == rev.primary) return sub.primary;
     }
-    if (genAssign == 2 && sub.secondary == rev.primary && sub.secondary != 0) return sub.secondary;
-    return sub.primary;
+    if (params.secondaryDomain == 1 && params.primaryExpertise == 1) {
+        if (sub.secondary != 0 && sub.secondary == rev.primary) return sub.secondary;
+    }
+    if (params.primaryDomain == 1 && params.secondaryExpertise == 1) {
+        if (rev.secondary != 0 && sub.primary == rev.secondary) return sub.primary;
+    }
+    if (params.secondaryDomain == 1 && params.secondaryExpertise == 1) {
+        if (sub.secondary != 0 && rev.secondary != 0 && sub.secondary == rev.secondary) return sub.secondary;
+    }
+    return sub.primary; // default (safety)
 }
 
 void generateOutput(const Graph<string>* g, const graph_info& info, const vector<int>& risk) {
@@ -59,7 +64,7 @@ void generateOutput(const Graph<string>* g, const graph_info& info, const vector
 
                     for (const auto& rev : info.reviewers) {
                         if (rev.email == revEmail) {
-                            assigns.push_back({sub.id, rev.id, getMatch(sub, rev, info.control.genAssignments)});
+                            assigns.push_back({sub.id, rev.id, getMatch(sub, rev, info.parameters)});
                             break;
                         }
                     }
