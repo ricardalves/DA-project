@@ -75,16 +75,9 @@ void runGenerateAssignments(Graph<string>* g, vector<Submission> subs, vector<Re
     if (ctrl.genAssignments==1) {
         for (auto sub: subs) {
             for (auto rev : rev_unique) {
-                bool match = false;
-                if (params.primaryDomain == 1 && params.primaryExpertise == 1 && sub.primary == rev.primary) match = true;
-                if (params.secondaryDomain == 1 && params.primaryExpertise == 1 && sub.secondary != 0 && sub.secondary == rev.primary) match = true;
-                if (params.primaryDomain == 1 && params.secondaryExpertise == 1 && rev.secondary != 0 && sub.primary == rev.secondary) match = true;
-                if (params.secondaryDomain == 1 && params.secondaryExpertise == 1 && sub.secondary != 0 && rev.secondary != 0 && sub.secondary == rev.secondary) match = true;
-
-
-                if (match) g->findVertex(sub.title)->addEdge(g->findVertex(rev.email), 1);
+                if (sub.primary==rev.primary)
+                    g->findVertex(sub.title)->addEdge(g->findVertex(rev.email), 1);
             }
-
         }
     }
     if (ctrl.genAssignments==2) {
