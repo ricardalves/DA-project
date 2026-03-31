@@ -1,3 +1,7 @@
+/**
+* @file main.cpp
+ * @brief Entry point and user interface for the program
+ */
 #include "Output.h"
 #include "Graph.h"
 #include "DataStructures.h"
@@ -8,6 +12,9 @@
 #include "AssignmentTool.h"
 using namespace std;
 
+/**
+ * @brief Displays the matching results of the assignment algorithm.
+ */
 void displayAssignmentResults(Graph<string>* graph, const graph_info& info) {
     cout << "\n\n=== RESULTS DISPLAY ===" << endl;
 
@@ -62,7 +69,9 @@ void displayAssignmentResults(Graph<string>* graph, const graph_info& info) {
     cout << "\n";
 }
 
-
+/**
+ * @brief Displays the IDs of the reviewers whose absence makes the assignment impossible.
+ */
 void displayRiskAnalysisResults(const vector<int>& risky_reviewers) {
     cout << "\n\n=== RISK ANALYSIS RESULTS ===" << endl;
 
@@ -84,7 +93,9 @@ void displayRiskAnalysisResults(const vector<int>& risky_reviewers) {
     cout << "\n";
 }
 
-
+/**
+ * @brief Executes the interactive command-line menu for the user.
+ */
 void runMenu() {
     int choice = 0;
     string inputFile;
@@ -173,8 +184,9 @@ void runMenu() {
     }
 }
 
-
-
+/**
+ * @brief Executes the assignment algorithm in batch mode, generating the output file directly.
+ */
 void runBatchMode(const string& inputFile, const string& outputFile) {
 
     graph_info info = populateInfo(inputFile);
@@ -198,7 +210,9 @@ void runBatchMode(const string& inputFile, const string& outputFile) {
     }
 }
 
-
+/**
+ * @brief Main function. Handles command-line arguments to switch between batch and menu modes.
+ */
 int main(int argc, char* argv[]) {
 
     if (argc == 4 && string(argv[1]) == "-b") {
