@@ -222,7 +222,9 @@ bool isAssignmentValid(const Graph<string>* g, Parameters params) {
 vector<int> runRiskAnalysis(graph_info info) {
     vector<int> ids;
     int id_rev;
+    vector<Reviewer> revszinhos=info.reviewers;
     if (info.control.riskAnalysis==1) {
+
         for (auto rev: info.reviewers) {
             vector<Reviewer> revs;
             for (auto rev1: info.reviewers) {
@@ -234,6 +236,7 @@ vector<int> runRiskAnalysis(graph_info info) {
             info.reviewers=revs;
             Graph<string>* g = createGraph(info);
             if (!isAssignmentValid(g,info.parameters)) ids.push_back(id_rev);
+            info.reviewers=revszinhos;
             delete g;
         }
     }
