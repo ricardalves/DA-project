@@ -42,7 +42,7 @@ void displayAssignmentResults(Graph<string>* graph, const graph_info& info) {
                 }
 
                 if (num_reviews < info.parameters.minReviewsSub) {
-                    cout << "  -> [WARNING] Submission " << sub_vertex->getNum()
+                    cout << "  Submission " << sub_vertex->getNum()
                          << " needs " << (info.parameters.minReviewsSub - num_reviews)
                          << " more review(s)!" << endl;
                 }
@@ -76,11 +76,11 @@ void displayRiskAnalysisResults(const vector<int>& risky_reviewers) {
     cout << "\n\n=== RISK ANALYSIS RESULTS ===" << endl;
 
     if (risky_reviewers.empty()) {
-        cout << " [SUCCESS] No at-risk reviewers detected!" << endl;
+        cout << "No at-risk reviewers detected!" << endl;
         cout << "           The assignment is always possible." << endl;
     } else {
-        cout << " [WARNING] Found " << risky_reviewers.size() << " at-risk reviewer(s)." << endl;
-        cout << " -> IDs: ";
+        cout << "Found " << risky_reviewers.size() << " at-risk reviewer(s)." << endl;
+        cout << "IDs: ";
 
         for (size_t i = 0; i < risky_reviewers.size(); ++i) {
             cout << risky_reviewers[i];
@@ -146,7 +146,7 @@ void runMenu() {
                 break;
             }
             case 2: {
-                cout << "\n\n Dataset Information " << endl;
+                cout << "\n\n === Dataset Information === " << endl;
                 cout << "Total Submissions: " << info.submissions.size() << endl;
                 cout << "Total Reviewers: " << info.reviewers.size() << endl;
                 cout << "Min Reviews per Submission: " << info.parameters.minReviewsSub << endl;
